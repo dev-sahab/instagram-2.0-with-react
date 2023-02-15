@@ -9,6 +9,7 @@ Hi! Here is I'm trying to clone instagram with some features with React.js
 ## Features
 
 * Upload Photo in Cloudinary
+* Post upload timestamp
 * Store Data in JSON-Server with image link and id
 * Show More button like Instagram
 * Slide Images
