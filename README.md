@@ -36,14 +36,10 @@ npm install
 
 Remove the "sample" from "sample.env.js" and "sample.db.json" files.
 
-and then run the project
+and then run the project with json server
 
 ```bash
-npm start
-```
-
-```bash
-npm run server
+npm run dev
 ```
 
 Here you go 😊
