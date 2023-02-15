@@ -1,6 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import "./Home.scss"
+import axios from 'axios';
 
+// Import Swiper React components
+import { Swiper, SwiperSlide } from "swiper/react";
+// Import Swiper styles
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
+// import required modules
+import { Keyboard, Pagination, Navigation } from "swiper";
 
 //images
 import logo from "../../img/instagram.svg";
@@ -11,7 +20,7 @@ import reals from "../../img/reels.svg";
 import message from "../../img/message.svg";
 import notification from "../../img/notification.svg";
 import create from "../../img/create_post.svg";
-import profileImg from "../../img/sidebar_profile.jpg";
+import profileImg from "../../img/shahab.jpg";
 import moreMenu from "../../img/more.svg";
 import story1 from "../../img/story1.jpg";
 import story2 from "../../img/story2.jpg";
@@ -19,7 +28,6 @@ import story3 from "../../img/story3.jpg";
 import story4 from "../../img/story4.jpg";
 import story5 from "../../img/story5.jpg";
 import story6 from "../../img/story6.jpg";
-import story7 from "../../img/story7.jpg";
 import ali from "../../img/ali.jpg";
 import dot from "../../img/dots_dark.svg";
 import ali1 from "../../img/ali_post1.jpg";
@@ -28,18 +36,77 @@ import comment from "../../img/comment.svg";
 import save from "../../img/save.svg";
 import imoji from "../../img/imoji.svg";
 
-
-import { data } from '../../data';
-
+// components
+import PostModal from '../../Components/PostModal/PostModal';
+import { Link } from 'react-router-dom';
+import ShowMore from '../../Components/PostModal/ShowMore/ShowMore';
 
 
 
 const Home = () => {
-    const {text} = data
     
-    const [expend, setExpend] = useState(false);
-    const textForDisplay = expend ? text : `${text.substring(0, 55)}...`;
+    // hooks
+    const [showModal, setShowModal] = useState(false); // show modal 
+    const [posts, setPosts] = useState([]); // get all post data from database
 
+
+    // function for post time counter
+    const postUploadTime = (postTime) => {
+
+        // get a timestamp
+        const currentTime = new Date();
+        const timeDiff = currentTime.getTime() - postTime;
+        const seconds = Math.floor(timeDiff / 1000); // seconds
+        const minutes = Math.floor(seconds / 60); // minutes
+        const hours = Math.floor(minutes / 60); // hours
+        const days = Math.floor(hours / 24); // days
+
+        // return the result
+        if (seconds < 60) {
+            return `Just now`;
+        }
+        else if (seconds >= 60 && minutes < 60) {
+            return `${minutes} ${minutes > 1 ? "minutes" : "minute"} ago`;
+        }
+        else if (minutes >= 60 && hours < 24) {
+            return `${hours} ${hours > 1? "hours" : "hour"} ago`;
+        }
+        else if (hours >= 24) {
+            return `${days} ${days > 1? "days" : "day"} ago`;
+        }
+        
+    }
+
+    // effects
+    useEffect(() => {
+        axios.get('http://localhost:5050/posts?_sort=id&_order=desc').then(res => {
+            setPosts(res.data); // set posts from database
+        }).catch(err => {
+            console.log(err.message);
+        });
+    }, [showModal, setPosts]);
+
+
+    // like handler
+    const handleLike = (id) => {
+
+        // get data without updating data
+        const postData = posts.find(data => data.id === id);
+        // update data for post like
+        const updateLike = {
+            ...postData,
+            likes : postData.likes + 1
+        }
+
+        // marge all data
+        const updatedData = [...posts.filter(data => data.id!== id), updateLike];
+        
+        // update database and save to json file
+        axios.patch(`http://localhost:5050/posts/${id}`, updateLike).then(res => {
+            setPosts(updatedData.sort((a, b) => b.id - a.id)); // set updated data to state
+        })
+
+    }
 
   return (
     <>
@@ -52,80 +119,80 @@ const Home = () => {
                 <div className="menus">
                     <ul>
                         <li className='menu-list'>
-                            <a href="#"  className="menu-item active">
+                            <Link to="/"  className="menu-item active">
                                 <span className="icon">
                                     <img src={home} alt="" />
                                 </span>
                                 <span className='mn'>Home</span>
-                            </a>
+                            </Link>
                         </li>
                         <li className='menu-list'>
-                            <a href="#"  className="menu-item">
+                            <Link to="/"  className="menu-item">
                                 <span className="icon">
                                     <img src={search} alt="" />
                                 </span>
                                 <span className='mn'>Search</span>
-                            </a>
+                            </Link>
                         </li>
                         <li className='menu-list'>
-                            <a href="#"  className="menu-item">
+                            <Link to="/"  className="menu-item">
                                 <span className="icon">
                                     <img src={explore} alt="" />
                                 </span>
                                 <span className='mn'>Explore</span>
-                            </a>
+                            </Link>
                         </li>
                         <li className='menu-list'>
-                            <a href="#"  className="menu-item">
+                            <Link to="/"  className="menu-item">
                                 <span className="icon">
                                     <img src={reals} alt="" />
                                 </span>
                                 <span className='mn'>Reals</span>
-                            </a>
+                            </Link>
                         </li>
                         <li className='menu-list'>
-                            <a href="#"  className="menu-item">
+                            <Link to="/"  className="menu-item">
                                 <span className="icon">
                                     <img src={message} alt="" />
                                 </span>
                                 <span className='mn'>Messages</span>
-                            </a>
+                            </Link>
                         </li>
                         <li className='menu-list'>
-                            <a href="#"  className="menu-item">
+                            <Link to="/"  className="menu-item">
                                 <span className="icon">
                                     <img src={notification} alt="" />
                                 </span>
                                 <span className='mn'>Notifications</span>
-                            </a>
+                            </Link>
                         </li>
                         <li className='menu-list'>
-                            <a href="#"  className="menu-item">
+                            <button className="menu-item" onClick={() => setShowModal(true)}>
                                 <span className="icon">
                                     <img src={create} alt="" />
                                 </span>
                                 <span className='mn'>Create</span>
-                            </a>
+                            </button>
                         </li>
                         <li className='menu-list'>
-                            <a href="#"  className="menu-item">
+                            <Link to="/"  className="menu-item">
                                 <span className="icon profile">
                                     <img src={profileImg} alt="" />
                                 </span>
                                 <span className='mn'>Profile</span>
-                            </a>
+                            </Link>
                         </li>
                     </ul>
                 </div>
 
                 <div className="more-menus">
                     <div className='menu-list'>
-                        <a href="#"  className="menu-item">
+                        <Link to="/"  className="menu-item">
                             <span className="icon">
                                 <img src={moreMenu} alt="" />
                             </span>
                             <span className='mn'>More</span>
-                        </a>
+                        </Link>
                     </div>
                 </div>
             </div>
@@ -199,6 +266,113 @@ const Home = () => {
 
                     <div className="post-wrapper">
                         <div className="post-inner">
+                            {
+                                posts.map((post, index) => {
+                                    
+                                    return (
+                                        <article key={index}>
+                                            <div className="article-inner">
+                                                <div className="auth-sec">
+                                                    <div className="auth-info">
+                                                        <div className="auth-img">
+                                                            <div className="img">
+                                                                <img src={post.profileImg} alt="" />
+                                                            </div>
+                                                        </div>
+                                                        <div className="auth-name">
+                                                            <div className="name">
+                                                                <span className='nm'>{post.username}</span>
+                                                                <span className='dot'>•</span>
+                                                                <span className='time'>{postUploadTime(post.time)}</span>
+                                                            </div>
+                                                            {post.location && (
+                                                                <div className="desc">
+                                                                    <span>{post.location}</span>
+                                                                </div>
+                                                            )}
+                                                            
+                                                        </div>
+                                                    </div>
+                                                    <div className="action">
+                                                        <button>
+                                                            <img src={dot} alt="" />
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <div className="post">
+                                                    <div className="image-post">
+                                                        <div className="img-wrapper">
+                                                            <Swiper
+                                                                slidesPerView={1}
+                                                                spaceBetween={30}
+                                                                keyboard={{
+                                                                enabled: true,
+                                                                }}
+                                                                pagination={{
+                                                                clickable: true,
+                                                                }}
+                                                                navigation={true}
+                                                                modules={[Keyboard, Pagination, Navigation]}
+                                                                className="mySwiper"
+                                                            >
+                                                            {post.photos.map((photo, index) => {
+                                                                return (
+                                                                    <SwiperSlide>
+                                                                        <img key={index} src={photo.url} alt="" />
+                                                                    </SwiperSlide>
+                                                                )
+                                                            })}
+                                                            </Swiper>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="content-box">
+                                                    <div className="like-sec">
+                                                        <ul>
+                                                            <li><button onClick={() => handleLike(post.id)}>{post.likes > 0 ? <img src={liked} alt="" /> : <img src={notification} alt="" />}</button></li>
+                                                            <li><button><img src={comment} alt="" /></button></li>
+                                                            <li><button><img src={message} alt="" /></button></li>
+                                                            <li><button><img src={save} alt="" /></button></li>
+                                                        </ul>
+                                                    </div>
+                                                    <div className="like-count">
+                                                        <span>{`${post.likes} ${post.likes > 1 ? "likes" : "like"}`}</span>
+                                                    </div>
+                                                    <div className="post-content">
+                                                        <div className="content-wrapper">
+                                                            <div className="auth-username">
+                                                                <span>{post.username}</span>
+                                                            </div>
+                                                            
+                                                            <div className="content">
+                                                                
+                                                                {/* <p><ShowFirstLine text={post.post} /></p> */}
+                                                                <p>{<ShowMore text={post.post} />}</p>
+                                                                {/* <p><HighlightedAndExpandedText text={post.post} /></p> */}
+                                                            </div>
+                                                        </div>
+                                                        <div className="comment-count">
+                                                            <span>View all 103 comments</span>
+                                                        </div>
+                                                        <div className="comment-box">
+                                                            <div className="comment-form">
+                                                                <form>
+                                                                    <textarea placeholder='Add a comment...'></textarea>
+                                                                </form>
+                                                            </div>
+                                                            <div className="icon">
+                                                                <button>
+                                                                    <img src={imoji} alt="" />
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </article>
+                                    )
+                                })
+                            }
                             <article>
                                 <div className="article-inner">
                                     <div className="auth-sec">
@@ -250,10 +424,8 @@ const Home = () => {
                                                     <span>shuvoalways</span>
                                                 </div>
                                                 <div className="content">
-                                                    <p>{textForDisplay}
-                                                    <button onClick={() => setExpend(!expend)}>
-                                                        {expend ? "" : "more"}
-                                                    </button></p>
+                                                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit...
+                                                    <button>more</button></p>
                                                 </div>
                                             </div>
                                             <div className="comment-count">
@@ -286,7 +458,7 @@ const Home = () => {
                         </div>
                         <div className="auth-desc">
                             <div className="user-name">
-                                <a href='#'>shahab.insta</a>
+                                <Link to='#'>shahab.insta</Link>
                             </div>
                             <div className="name">
                                 <span>Md Shahab Uddin</span>
@@ -359,15 +531,15 @@ const Home = () => {
                     <div className="footer">
                         <div className="top">
                             <ul className='nav'>
-                                <li><a href="#">About</a></li>
-                                <li><a href="#">Help</a></li>
-                                <li><a href="#">Press</a></li>
-                                <li><a href="#">API</a></li>
-                                <li><a href="#">Jobs</a></li>
-                                <li><a href="#">Privacy</a></li>
-                                <li><a href="#">Terms</a></li>
-                                <li><a href="#">Locations</a></li>
-                                <li><a href="#">Language</a></li>
+                                <li><Link to="/">About</Link></li>
+                                <li><Link to="/">Help</Link></li>
+                                <li><Link to="/">Press</Link></li>
+                                <li><Link to="/">API</Link></li>
+                                <li><Link to="/">Jobs</Link></li>
+                                <li><Link to="/">Privacy</Link></li>
+                                <li><Link to="/">Terms</Link></li>
+                                <li><Link to="/">Locations</Link></li>
+                                <li><Link to="/">Language</Link></li>
                             </ul>
                         </div>
                         <div className="bottom">
@@ -377,7 +549,9 @@ const Home = () => {
                 </div>
             </div>
         </div>
+        {showModal && <PostModal action={setShowModal} />}
     </>
+
   )
 }
 

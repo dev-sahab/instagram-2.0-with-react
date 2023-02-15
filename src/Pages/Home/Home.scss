@@ -40,7 +40,11 @@ aside {
                         margin: 2px 0;
                         align-items: center;
                         font-weight: 400;
-
+                        background-color: transparent;
+                        border: 0;
+                        width: 100%;
+                        cursor: pointer;
+                        
                         &.active {
                             font-weight: 700;
                         }
@@ -113,6 +117,7 @@ aside {
 .main {
     width: calc(100% - 335px);
     margin: 0 0 0 auto;
+    position: relative;
 
     .main-container {
         max-width: 853px;
@@ -123,7 +128,7 @@ aside {
         align-items: stretch;
         flex-flow: row nowrap;
 
-        .content-wrapper {
+        > .content-wrapper {
             max-width: 470px;
             width: 100%;
             margin-right: 64px;
@@ -258,6 +263,10 @@ aside {
                                     .auth-name {
                                         margin-left: 10px;
                                         min-height: 40px;
+                                        display: flex;
+                                        justify-content: center;
+                                        flex-direction: column;
+                                        align-items: stretch;
 
                                         .name {
                                             padding: 2px;
@@ -323,9 +332,43 @@ aside {
                                 .image-post {
 
                                     .img-wrapper {
+                                        background: #000;
+                                        position: relative;
+                                        // z-index: 0;
+
                                         img {
                                             vertical-align: middle;
                                         }
+
+                                        .swiper-wrapper {
+                                            align-items: center;
+                                        }
+
+                                        .swiper-button-prev, .swiper-button-next {
+                                            background: rgba(0, 0, 0, .3);
+                                            width: 32px !important;
+                                            height: 32px !important;
+                                            border-radius: 50%;
+                                            line-height: 32px;
+                                            font-size: 16px;
+                
+                                            &::after {
+                                                font-size: 16px;
+                                                color: #fff;
+                                                font-weight: 900;
+                                            }
+                                        }
+
+                                        .swiper-pagination-bullet {
+                                            opacity: .4;
+                                            background: #fff;
+                                            width: 6px;
+                                            height: 6px;
+                                        }
+                                        .swiper-pagination-bullet-active {
+                                            opacity: 1;
+                                        }
+                                        
                                     }
                                 }
                             }
@@ -391,12 +434,12 @@ aside {
 
                                         .auth-username {
                                             display: inline;
-                                            margin-right: 10px;
+                                            margin-right: 5px;
 
                                             span {
                                                 color: #262626;
-                                                font-size: 14px;
-                                                font-weight: 600;
+                                                font-size: 13.3px;
+                                                font-weight: 500;
                                                 line-height: 18px;
                                             }
                                         }
@@ -405,10 +448,10 @@ aside {
                                             display: inline;
                                             p {
                                                 display: inline;
-                                                font-size: 14px;
+                                                font-size: 13.3px;
                                                 line-height: 18px;
                                                 color: #262626;
-                                                font-weight: 500;
+                                                font-weight: 400;
 
                                                 button {
                                                     background-color: transparent;
