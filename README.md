@@ -26,7 +26,9 @@ Install the project
 git clone https://github.com/shb-services/instagram-2.0-with-react.git
 ```
 
-Open file and write the commands in your terminal for install all packages
+Open file and write the commands in your terminal 
+
+For install all packages
 
 ```bash
 npm install
@@ -34,7 +36,7 @@ npm install
 
 Remove the "sample" from "sample.env.js" and "sample.db.json" files.
 
-and then run the project with
+and then run the project
 
 ```bash
 npm start
