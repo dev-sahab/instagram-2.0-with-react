@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from 'react'
 import "./PostModal.scss";
 import { CiLocationOn } from "react-icons/ci"
 import { GrDown } from "react-icons/gr";
-import { env } from '../../env';
 import axios from 'axios';
+import { env } from '../../env'; // environment variable file
 
 
 
@@ -245,10 +245,8 @@ const PostModal = ({action}) => {
                                         </div>
                                     </div>
                                 )}
-                            </>
-                            )
+                            </>)
                         }
-                        
                     </div>
                 </div>
             </div>

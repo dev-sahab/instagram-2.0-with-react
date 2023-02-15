@@ -345,10 +345,7 @@ const Home = () => {
                                                             </div>
                                                             
                                                             <div className="content">
-                                                                
-                                                                {/* <p><ShowFirstLine text={post.post} /></p> */}
                                                                 <p>{<ShowMore text={post.post} />}</p>
-                                                                {/* <p><HighlightedAndExpandedText text={post.post} /></p> */}
                                                             </div>
                                                         </div>
                                                         <div className="comment-count">
@@ -373,6 +370,7 @@ const Home = () => {
                                     )
                                 })
                             }
+                            {/* This is a static Post */}
                             <article>
                                 <div className="article-inner">
                                     <div className="auth-sec">
